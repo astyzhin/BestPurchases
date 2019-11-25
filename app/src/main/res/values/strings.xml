@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">BestPurchases</string>
     <string name="action_settings">Settings</string>
+    <string name="event_name">Birthday</string>
+    <string name="event_attendees_amount">30 people</string>
+    <string name="event_date">25.11.2019</string>
+    <string name="event_image_description">Event image</string>
+    <string name="event_time">20:00</string>
 </resources>
