@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.akmisoftware.bestpurchases.db.DataSource
 import com.akmisoftware.bestpurchases.model.Event
@@ -41,9 +42,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun initRecyclerView() {
         linearLayoutManager = LinearLayoutManager(this)
+        val decoration = DividerItemDecoration(home_recyclerView.context, linearLayoutManager.orientation)
+
         home_recyclerView.apply {
             layoutManager = linearLayoutManager
             adapter = groupAdapter
+            addItemDecoration(decoration)
         }
     }
 
