@@ -4,7 +4,7 @@ import com.akmisoftware.bestpurchases.model.Event
 import com.akmisoftware.bestpurchases.model.Purchase
 import com.akmisoftware.bestpurchases.model.User
 
-class DataSource {
+object DataSource {
 
     fun createEventsDB(): ArrayList<Event> {
     val events = ArrayList<Event>()
