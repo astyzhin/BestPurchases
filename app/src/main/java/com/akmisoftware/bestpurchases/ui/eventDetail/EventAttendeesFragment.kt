@@ -17,13 +17,10 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_event_attendees.*
 import kotlinx.android.synthetic.main.fragment_event_attendees.view.*
 
-/**
- * A simple [Fragment] subclass.
- */
 class EventAttendeesFragment : Fragment() {
+
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onCreateView(
@@ -36,15 +33,7 @@ class EventAttendeesFragment : Fragment() {
             adapter = groupAdapter
         }
         getUsers()
-//        initRecyclerView()
         return root
-    }
-
-    private fun initRecyclerView() {
-        fragment_attendees_recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@EventAttendeesFragment.context)
-            adapter = groupAdapter
-        }
     }
 
     private fun getUsers() {

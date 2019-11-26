@@ -29,9 +29,9 @@ object DataSource {
     fun createPurchasesDB(): ArrayList<Purchase> {
         val purchases = ArrayList<Purchase>()
         purchases.apply {
-            add(Purchase("Toy"))
-            add(Purchase("Box"))
-            add(Purchase("Spinner"))
+            add(Purchase("Toy", R.drawable.train))
+            add(Purchase("Box", R.drawable.box))
+            add(Purchase("Spinner", R.drawable.spinner))
             return purchases
         }
     }

@@ -2,24 +2,63 @@ package com.akmisoftware.bestpurchases.ui.eventDetail
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.akmisoftware.bestpurchases.R
+import com.akmisoftware.bestpurchases.db.DataSource
+import com.akmisoftware.bestpurchases.model.Purchase
+import com.akmisoftware.bestpurchases.ui.recyclerViewItems.PurchaseItem
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_event_purchases.view.*
 
-/**
- * A simple [Fragment] subclass.
- */
 class EventPurchasesFragment : Fragment() {
+
+    private val groupAdapter = GroupAdapter<GroupieViewHolder>()
+    private lateinit var disposable: Disposable
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_event_purchases, container, false)
+        val root = inflater.inflate(R.layout.fragment_event_purchases, container, false)
+        root.fragment_purchases_recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@EventPurchasesFragment.context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = groupAdapter
+        }
+        getPurchases()
+        return root
     }
 
+    private fun getPurchases() {
+        disposable = Observable
+            .fromIterable(DataSource.createPurchasesDB())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(this::handleResponse, this::handleError)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (!disposable.isDisposed) {
+            disposable.dispose()
+        }
+    }
+
+    private fun handleResponse(purchase: Purchase) {
+        Log.d("PurchaseSub", "onNext: ${purchase.name}")
+        groupAdapter.add(PurchaseItem(purchase))
+    }
+    private fun handleError(error: Throwable) {
+        Log.e("PurchaseSub", error.localizedMessage as String)
+    }
 
 }
