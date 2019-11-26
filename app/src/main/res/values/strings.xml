@@ -7,4 +7,8 @@
     <string name="event_date">25.11.2019</string>
     <string name="event_image_description">Event image</string>
     <string name="event_time">20:00</string>
+
+    <string name="details_fragment">Details</string>
+    <string name="attendees_fragment">Attendees</string>
+    <string name="purchases_fragment">Purchases</string>
 </resources>

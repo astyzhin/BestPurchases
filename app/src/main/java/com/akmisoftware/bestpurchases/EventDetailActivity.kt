@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.akmisoftware.bestpurchases.db.AppConstants
 import com.akmisoftware.bestpurchases.model.Event
+import com.akmisoftware.bestpurchases.ui.eventDetail.EventDetailPagerAdapter
 import kotlinx.android.synthetic.main.activity_event_detail.*
 import java.text.SimpleDateFormat
 
@@ -23,6 +24,9 @@ class EventDetailActivity : AppCompatActivity() {
         }
         setupView()
 
+        val fragmentAdapter = EventDetailPagerAdapter(supportFragmentManager)
+        event_viewPager.adapter = fragmentAdapter
+        tabLayout.setupWithViewPager(event_viewPager)
     }
 
     private fun setupView() {
