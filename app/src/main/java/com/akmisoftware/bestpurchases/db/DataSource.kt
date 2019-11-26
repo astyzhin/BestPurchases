@@ -8,9 +8,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 object DataSource {
-
     fun createEventsDB(): ArrayList<Event> {
     val events = ArrayList<Event>()
+
         events.apply {
             add(Event("Birthday", 20, Date(1574719770000), "21:00", R.drawable.birthday))
             add(Event("Party", 10, Date(1574892246000), "11:00", R.drawable.party))

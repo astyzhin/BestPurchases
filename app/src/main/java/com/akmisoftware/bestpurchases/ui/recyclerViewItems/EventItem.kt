@@ -12,11 +12,11 @@ class EventItem(val event: Event) : Item() {
         viewHolder.itemView.apply {
             event_image.setImageResource(event.image)
             event_name.text = event.name
-            event_attendees_amount.text = event.attendees.toString() + " people"
+            event_attendees_amount.text = event.attendeesAmount.toString() + " people"
             dateFormatter(viewHolder)
         }
     }
-    fun dateFormatter(viewHolder: GroupieViewHolder) {
+    private fun dateFormatter(viewHolder: GroupieViewHolder) {
         val dateFormatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT)
         val timeFormatter = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT)
         viewHolder.itemView.apply {

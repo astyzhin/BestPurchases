@@ -42,5 +42,7 @@ dependencies {
     //Groupie - RecyclerView
     implementation "com.xwray:groupie:2.7.0"
     implementation 'com.xwray:groupie-kotlin-android-extensions:2.7.0'
+    //Google Play Services dependency required for using the Google Maps Android API
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
 }

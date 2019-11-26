@@ -35,7 +35,7 @@ class EventDetailActivity : AppCompatActivity() {
 
             event_detail_image.setImageResource(event!!.image)
             event_date_time_value.text = dateFormatter.format(event?.date) + " " + event?.time
-            event_attendees_value.text = event?.attendees.toString()
+            event_attendees_value.text = event?.attendeesAmount.toString()
 
         }
     }

@@ -14,7 +14,6 @@ import com.akmisoftware.bestpurchases.model.Event
 import com.akmisoftware.bestpurchases.ui.recyclerViewItems.EventItem
 import com.google.android.material.snackbar.Snackbar
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Section
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -24,7 +23,6 @@ import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var eventsSection: Section
     private lateinit var linearLayoutManager: LinearLayoutManager
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
