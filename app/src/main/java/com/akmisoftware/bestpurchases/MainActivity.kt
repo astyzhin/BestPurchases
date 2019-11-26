@@ -17,15 +17,17 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
-
+    private var disposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +37,10 @@ class MainActivity : AppCompatActivity() {
         getEvents()
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            Snackbar.make(view, "PLACEHOLDER Test Event was added", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
+            val newEvent = Event("Test Event", 5, Date(), "10:00", R.drawable.box)
+            handleResponse(newEvent)
         }
     }
 
@@ -57,6 +61,7 @@ class MainActivity : AppCompatActivity() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::handleResponse, this::handleError)
+        disposable.add(eventObservable)
     }
 
     private fun handleResponse(event: Event) {
@@ -78,7 +83,6 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -87,5 +91,9 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        disposable.dispose()
     }
 }

@@ -16,14 +16,14 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_event_purchases.view.*
 
 class EventPurchasesFragment : Fragment() {
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
-    private lateinit var disposable: Disposable
+    private var disposable = CompositeDisposable()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,26 +33,20 @@ class EventPurchasesFragment : Fragment() {
         root.fragment_purchases_recyclerView.apply {
             layoutManager = LinearLayoutManager(this@EventPurchasesFragment.context, LinearLayoutManager.HORIZONTAL, false)
             adapter = groupAdapter
+            groupAdapter.clear()
         }
         getPurchases()
         return root
     }
 
     private fun getPurchases() {
-        disposable = Observable
+        val eventObservable = Observable
             .fromIterable(DataSource.createPurchasesDB())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::handleResponse, this::handleError)
+        disposable.add(eventObservable)
     }
-
-    override fun onStop() {
-        super.onStop()
-        if (!disposable.isDisposed) {
-            disposable.dispose()
-        }
-    }
-
     private fun handleResponse(purchase: Purchase) {
         Log.d("PurchaseSub", "onNext: ${purchase.name}")
         groupAdapter.add(PurchaseItem(purchase))
@@ -61,4 +55,16 @@ class EventPurchasesFragment : Fragment() {
         Log.e("PurchaseSub", error.localizedMessage as String)
     }
 
+    override fun onStop() {
+        super.onStop()
+        if (!disposable.isDisposed) {
+            disposable.clear()
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!disposable.isDisposed) {
+            disposable.dispose()
+        }
+    }
 }
