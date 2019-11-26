@@ -12,6 +12,7 @@
     <string name="details_fragment_location">Address</string>
 
     <string name="attendees_fragment">Attendees</string>
+    <string name="attendees_fragment_phoneNumber">+7(999)999–99–99</string>
     <string name="purchases_fragment">Purchases</string>
 
     <string name="lorem_ipsum_short">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </string>
