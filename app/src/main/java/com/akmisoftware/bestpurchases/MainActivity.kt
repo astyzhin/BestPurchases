@@ -1,5 +1,6 @@
 package com.akmisoftware.bestpurchases
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -7,6 +8,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.akmisoftware.bestpurchases.db.AppConstants
 import com.akmisoftware.bestpurchases.db.DataSource
 import com.akmisoftware.bestpurchases.model.Event
 import com.akmisoftware.bestpurchases.ui.recyclerViewItems.EventItem
@@ -33,6 +35,8 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         initRecyclerView()
         getEvents()
+
+
 
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -62,6 +66,12 @@ class MainActivity : AppCompatActivity() {
     private fun handleResponse(event: Event) {
         Log.d("EventSub", "onNext: ${event.name}")
         groupAdapter.add(EventItem(event))
+        groupAdapter.setOnItemClickListener { item, view ->
+            val intent = Intent(view.context,EventDetailActivity::class.java)
+            val eventItem = item as EventItem
+            intent.putExtra(AppConstants.EVENT_INFO, eventItem.event)
+            startActivity(intent)
+        }
     }
     private fun handleError(error: Throwable) {
         Log.e("EventSub", error.localizedMessage as String)
