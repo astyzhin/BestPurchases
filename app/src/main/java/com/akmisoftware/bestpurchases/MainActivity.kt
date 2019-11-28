@@ -46,8 +46,6 @@ class MainActivity : AppCompatActivity() {
         viewModelFactory = Injection.provideViewModelFactory(this)
         setSupportActionBar(toolbar)
 
-        deleteAllUsers()
-
         initRecyclerView()
 
         fab.setOnClickListener { view ->
@@ -69,7 +67,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun randomEvent(): Event {
-        val randomNumber = Random.nextInt(0, 3)
+        val randomNumber = Random.nextInt(0, 5)
         return when (randomNumber) {
             0 ->
                 Event(
@@ -101,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                     R.drawable.box
                 )
 
-            else ->
+            3 ->
                 Event(
                     UUID.randomUUID().toString(),
                     "Celebration",
@@ -109,6 +107,15 @@ class MainActivity : AppCompatActivity() {
                     Date(1577482460000),
                     "20:00",
                     R.drawable.celebration
+                )
+            else ->
+                Event(
+                    UUID.randomUUID().toString(),
+                    "Else Case",
+                    10,
+                    Date(1574892246000),
+                    "15:51",
+                    R.drawable.box
                 )
         }
     }
@@ -169,7 +176,8 @@ class MainActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> {
-                Toast.makeText(this, "Search menu TBD..", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "DataBase cleared..", Toast.LENGTH_LONG).show()
+                deleteAllUsers()
                 true
             }
             else -> super.onOptionsItemSelected(item)
