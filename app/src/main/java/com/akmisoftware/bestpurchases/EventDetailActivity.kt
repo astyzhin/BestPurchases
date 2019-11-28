@@ -11,6 +11,9 @@ import kotlinx.android.synthetic.main.activity_event_detail.*
 import java.text.SimpleDateFormat
 
 class EventDetailActivity : AppCompatActivity() {
+    companion object {
+        private val TAG = EventDetailActivity::class.java.simpleName
+    }
 
     var event: Event? = null
 

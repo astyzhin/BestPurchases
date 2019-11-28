@@ -21,6 +21,10 @@ import kotlinx.android.synthetic.main.fragment_event_attendees.view.*
 
 class EventAttendeesFragment : Fragment() {
 
+    companion object {
+        private val TAG = EventAttendeesFragment::class.java.simpleName
+    }
+
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onCreateView(
@@ -45,11 +49,11 @@ class EventAttendeesFragment : Fragment() {
     }
 
     private fun handleResponse(user: User) {
-        Log.d("UserSub", "onNext: ${user.name}")
+        Log.d("$TAG UserSub", "onNext: ${user.name}")
         groupAdapter.add(UserItem(user))
     }
     private fun handleError(error: Throwable) {
-        Log.e("UserSub", error.localizedMessage as String)
+        Log.e("$TAG UserSub", error.localizedMessage as String)
     }
 
 

@@ -22,6 +22,10 @@ import kotlinx.android.synthetic.main.fragment_event_purchases.view.*
 
 class EventPurchasesFragment : Fragment() {
 
+    companion object {
+        private val TAG = EventPurchasesFragment::class.java.simpleName
+    }
+
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
     private var disposable = CompositeDisposable()
 
@@ -31,7 +35,11 @@ class EventPurchasesFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_event_purchases, container, false)
         root.fragment_purchases_recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@EventPurchasesFragment.context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(
+                this@EventPurchasesFragment.context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
             adapter = groupAdapter
             groupAdapter.clear()
         }
@@ -47,12 +55,14 @@ class EventPurchasesFragment : Fragment() {
             .subscribe(this::handleResponse, this::handleError)
         disposable.add(eventObservable)
     }
+
     private fun handleResponse(purchase: Purchase) {
-        Log.d("PurchaseSub", "onNext: ${purchase.name}")
+        Log.d("$TAG PurchaseSub", "onNext: ${purchase.name}")
         groupAdapter.add(PurchaseItem(purchase))
     }
+
     private fun handleError(error: Throwable) {
-        Log.e("PurchaseSub", error.localizedMessage as String)
+        Log.e("$TAG PurchaseSub", error.localizedMessage as String)
     }
 
     override fun onStop() {
@@ -61,6 +71,7 @@ class EventPurchasesFragment : Fragment() {
             disposable.clear()
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         if (!disposable.isDisposed) {
