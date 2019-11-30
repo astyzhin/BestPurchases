@@ -1,4 +1,4 @@
-//package com.akmisoftware.bestpurchases
+package com.akmisoftware.bestpurchases
 //
 //import androidx.recyclerview.widget.ItemTouchHelper
 //import androidx.recyclerview.widget.RecyclerView
@@ -9,7 +9,7 @@
 //        recyclerView: RecyclerView,
 //        viewHolder: GroupieViewHolder
 //    ): Int {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//
 //    }
 //
 //    override fun onMove(
@@ -17,7 +17,7 @@
 //        viewHolder: GroupieViewHolder,
 //        target: GroupieViewHolder
 //    ): Boolean {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//
 //    }
 //
 //    override fun onSwiped(viewHolder: GroupieViewHolder, direction: Int) {

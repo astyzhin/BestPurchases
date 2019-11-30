@@ -9,11 +9,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.akmisoftware.bestpurchases.model.Event
 import com.akmisoftware.bestpurchases.ui.EventViewModel
 import com.akmisoftware.bestpurchases.ui.ViewModelFactory
 import com.akmisoftware.bestpurchases.ui.recyclerViewItems.EventItem
-import com.google.android.material.snackbar.Snackbar
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,9 +19,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import java.util.*
 import kotlin.concurrent.thread
-import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -45,81 +41,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         viewModelFactory = Injection.provideViewModelFactory(this)
         setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp)
+        }
 
         initRecyclerView()
 
         fab.setOnClickListener { view ->
             Log.d("$TAG Fab", "Added placeholder Event")
-            disposable.add(viewModel.updateEvent(randomEvent())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    Log.d("$TAG Fab", "Added placeholder Event$")
-                    Snackbar.make(
-                        view,
-                        "PLACEHOLDER Test Event was added",
-                        Snackbar.LENGTH_LONG
-                    )
-                        .setAction("Action", null).show()
-                })
+
         }
 
     }
-
-    private fun randomEvent(): Event {
-        val randomNumber = Random.nextInt(0, 5)
-        return when (randomNumber) {
-            0 ->
-                Event(
-                    UUID.randomUUID().toString(),
-                    "Birthday",
-                    20,
-                    Date(1574719770000),
-                    "21:00",
-                    R.drawable.birthday
-                )
-
-            1 ->
-                Event(
-                    UUID.randomUUID().toString(),
-                    "Party",
-                    10,
-                    Date(1574892246000),
-                    "11:00",
-                    R.drawable.party
-                )
-
-            2 ->
-                Event(
-                    UUID.randomUUID().toString(),
-                    "Test Event",
-                    5,
-                    Date(),
-                    "10:00",
-                    R.drawable.box
-                )
-
-            3 ->
-                Event(
-                    UUID.randomUUID().toString(),
-                    "Celebration",
-                    32,
-                    Date(1577482460000),
-                    "20:00",
-                    R.drawable.celebration
-                )
-            else ->
-                Event(
-                    UUID.randomUUID().toString(),
-                    "Else Case",
-                    10,
-                    Date(1574892246000),
-                    "15:51",
-                    R.drawable.box
-                )
-        }
-    }
-
 
     override fun onStart() {
         super.onStart()
@@ -139,12 +73,6 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    fun deleteAllUsers() {
-        thread {
-            viewModel.deleteAllEvents()
-        }
-    }
-
     private fun initRecyclerView() {
         linearLayoutManager = LinearLayoutManager(this)
         val decoration =
@@ -162,6 +90,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleError(error: Throwable) {
         Log.e("$TAG EventSub", error.localizedMessage as String)
+    }
+
+    private fun deleteAllUsers() {
+        thread {
+            viewModel.deleteAllEvents()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
