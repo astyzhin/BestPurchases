@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.akmisoftware.bestpurchases.model.Event
 import com.akmisoftware.bestpurchases.ui.EventViewModel
 import com.akmisoftware.bestpurchases.ui.ViewModelFactory
-import com.google.android.material.snackbar.Snackbar
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -40,16 +38,12 @@ class NewEventActivity : AppCompatActivity() {
         }
     }
 
-    private fun addEvent(view: View) {
+    private fun addEvent() {
         disposable.add(viewModel.updateEvent(randomEvent())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 Log.d("$TAG OptionsMenu", "Added placeholder Event$")
-                Snackbar.make(view, "PLACEHOLDER Test Event was added",
-                    Snackbar.LENGTH_LONG
-                )
-                    .setAction("Action", null).show()
             })
     }
 
@@ -119,7 +113,14 @@ class NewEventActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_create_event -> {
                 Toast.makeText(this, "Event created", Toast.LENGTH_LONG).show()
+                addEvent()
                 finish()
+                overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down)
+                true
+            }
+            android.R.id.home -> {
+                finish()
+                overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down)
                 true
             }
             else -> super.onOptionsItemSelected(item)

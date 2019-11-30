@@ -1,5 +1,6 @@
 package com.akmisoftware.bestpurchases
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -50,6 +51,9 @@ class MainActivity : AppCompatActivity() {
 
         fab.setOnClickListener { view ->
             Log.d("$TAG Fab", "Added placeholder Event")
+            val intent = Intent(this, NewEventActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
 
         }
 
@@ -117,6 +121,7 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
 
     override fun onStop() {
         super.onStop()
