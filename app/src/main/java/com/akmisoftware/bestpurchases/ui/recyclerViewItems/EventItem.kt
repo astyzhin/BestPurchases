@@ -1,9 +1,6 @@
 package com.akmisoftware.bestpurchases.ui.recyclerViewItems
 
-import android.content.Intent
-import com.akmisoftware.bestpurchases.EventDetailActivity
 import com.akmisoftware.bestpurchases.R
-import com.akmisoftware.bestpurchases.db.AppConstants
 import com.akmisoftware.bestpurchases.model.Event
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -17,13 +14,9 @@ class EventItem(val event: Event) : Item() {
             event_name.text = event.name
             event_attendees_amount.text = event.attendeesAmount.toString() + " people"
             dateFormatter(viewHolder)
-            setOnClickListener {
-                val intent = Intent(it.context, EventDetailActivity::class.java)
-                intent.putExtra(AppConstants.EVENT_INFO, event)
-                it.context.startActivity(intent)
-            }
         }
     }
+
 
     private fun dateFormatter(viewHolder: GroupieViewHolder) {
         val dateFormatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT)
@@ -36,7 +29,7 @@ class EventItem(val event: Event) : Item() {
 
     override fun isSameAs(other: com.xwray.groupie.Item<*>?): Boolean {
         if (other !is EventItem)
-         return false
+            return false
         if (this.event != other.event)
             return false
         return true
