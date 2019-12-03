@@ -13,7 +13,7 @@ class EventItem(val event: Event) : Item() {
         viewHolder.itemView.apply {
             event_image.setImageResource(event.image)
             event_name.text = event.name
-            event_attendees_amount.text = event.attendeesAmount.toString() + " people"
+            event_attendees_amount.text = (event.attendeesAmount.toString() + " people")
             dateFormatter(viewHolder)
         }
     }

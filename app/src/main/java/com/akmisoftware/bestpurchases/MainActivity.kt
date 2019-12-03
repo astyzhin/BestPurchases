@@ -67,7 +67,6 @@ class MainActivity : AppCompatActivity() {
             viewModel.loadAllEvents()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-
                 .subscribe({ list ->
                     Log.d("$TAG onStart", list.count().toString())
                     groupAdapter.clear()
@@ -75,10 +74,6 @@ class MainActivity : AppCompatActivity() {
                         Log.d("$TAG onStart", "$it")
                         groupAdapter.add(EventItem(it))
                     }
-//                    list.onEach {
-//                        Log.d("$TAG onStart", "$it")
-//                        groupAdapter.add(EventItem(it))
-//                    }
                 }, this::handleError)
         )
     }

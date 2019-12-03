@@ -12,13 +12,18 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.akmisoftware.bestpurchases.model.Event
 import com.akmisoftware.bestpurchases.ui.EventViewModel
 import com.akmisoftware.bestpurchases.ui.ViewModelFactory
+import com.akmisoftware.bestpurchases.ui.recyclerViewItems.ImagePickerItem
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_new_event.*
+import kotlinx.android.synthetic.main.item_image_picker.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.random.Random
@@ -33,8 +38,11 @@ class NewEventActivity : AppCompatActivity() {
     private val viewModel: EventViewModel by viewModels { viewModelFactory }
     //RxJava object
     private var disposable = CompositeDisposable()
+    //ImagePicker & Groupie
+    private val groupAdapter = GroupAdapter<GroupieViewHolder>()
+    private val imageList = listOf(R.drawable.box, R.drawable.birthday, R.drawable.party, R.drawable.celebration, R.drawable.doctor, R.drawable.learning, R.drawable.student)
+    private var imagePicked: Int? = null
     //Date&Time formatter
-    private val now = Date()
     private var eventDate = Date()
     private var eventTime =  Date()
     private val calendar = Calendar.getInstance()
@@ -90,12 +98,28 @@ class NewEventActivity : AppCompatActivity() {
         edit_eventTime_field.setOnClickListener {
             TimePickerDialog(this@NewEventActivity, calTme,
                 calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE), true).show()
+                calendar.get(Calendar.MINUTE), false).show()
+        }
+        initRecyclerView()
+    }
+    private fun initRecyclerView() {
+        edit_imagePickerRecyclerView.apply {
+            layoutManager = LinearLayoutManager(this@NewEventActivity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = groupAdapter
+        }
+        imageList.onEach {
+            groupAdapter.add(ImagePickerItem(it))
+        }
+        groupAdapter.setOnItemClickListener { item, view ->
+            if (item is ImagePickerItem) {
+                imagePicked = item.image
+                view.checkbox.toggle()
+            }
         }
     }
 
     private fun addEvent() {
-        disposable.add(viewModel.updateEvent(randomEvent())
+        disposable.add(viewModel.updateEvent(withNewEvent())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
@@ -103,62 +127,12 @@ class NewEventActivity : AppCompatActivity() {
             })
     }
 
-
-    private fun randomEvent(): Event {
+    private fun withNewEvent(): Event {
         val randomNumber = Random.nextInt(0, 5)
+        val id = UUID.randomUUID().toString()
         val name = edit_eventName_field.text?.toString() ?: "(No name)"
-        val date = eventDate
-        val time = eventTime
-        return when (randomNumber) {
-            0 ->
-                Event(
-                    UUID.randomUUID().toString(),
-                    name,
-                    20,
-                    date,
-                    time,
-                    R.drawable.birthday
-                )
-
-            1 ->
-                Event(
-                    UUID.randomUUID().toString(),
-                    name,
-                    10,
-                    date,
-                    time,
-                    R.drawable.party
-                )
-
-            2 ->
-                Event(
-                    UUID.randomUUID().toString(),
-                    name,
-                    5,
-                    date,
-                    time,
-                    R.drawable.box
-                )
-
-            3 ->
-                Event(
-                    UUID.randomUUID().toString(),
-                    name,
-                    32,
-                    date,
-                    time,
-                    R.drawable.celebration
-                )
-            else ->
-                Event(
-                    UUID.randomUUID().toString(),
-                    name,
-                    1,
-                    date,
-                    time,
-                    R.drawable.doctor
-                )
-        }
+        val image = imagePicked ?: imageList[0]
+        return Event(id, name, randomNumber, eventDate, eventTime, image)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

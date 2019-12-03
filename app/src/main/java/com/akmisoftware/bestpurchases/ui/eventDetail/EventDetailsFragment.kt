@@ -1,10 +1,12 @@
 package com.akmisoftware.bestpurchases.ui.eventDetail
 
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.akmisoftware.bestpurchases.R
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -62,12 +64,18 @@ class EventDetailsFragment : Fragment(), OnMapReadyCallback {
         super.onLowMemory()
         gMap?.onLowMemory()
     }
+    private fun setUpMap(map: GoogleMap?) {
+        if (ContextCompat.checkSelfPermission(this.context!!, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            map?.isMyLocationEnabled = true
+        }
+    }
 
     override fun onMapReady(p0: GoogleMap?) {
         val moscow = LatLng(55.751244, 37.618423)
         p0?.apply {
             addMarker(MarkerOptions().position(moscow).title("Moscow"))
             moveCamera(CameraUpdateFactory.newLatLngZoom(moscow, 10.0f))
+            setUpMap(this)
         }
     }
 
