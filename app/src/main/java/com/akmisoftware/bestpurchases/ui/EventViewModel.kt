@@ -10,15 +10,15 @@ import io.reactivex.Flowable
 class EventViewModel(private val dataSource: EventDao) : ViewModel() {
 
     fun loadAllEvents(): Flowable<List<Event>> {
-        dataSource.loadAllUsers().apply {
+        dataSource.loadAllEvents().apply {
             Log.d("DBfromVM", "$this")
         }
-        return dataSource.loadAllUsers()
+        return dataSource.loadAllEvents()
     }
 
-    fun eventName(): Flowable<Event> {
+    fun loadEventByID(id: String): Flowable<Event> {
         Log.d("DB","${dataSource}")
-        return dataSource.getUserById(EVENT_ID)
+        return dataSource.getEventById(id)
 //            .map { event -> event }
     }
 

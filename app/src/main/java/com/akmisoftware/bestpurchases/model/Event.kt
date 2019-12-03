@@ -22,8 +22,9 @@ data class Event(
     @TypeConverters(DateTypeConverter::class)
     @ColumnInfo(name = "date")
     val date: Date,
+    @TypeConverters(DateTypeConverter::class)
     @ColumnInfo(name = "time")
-    val time: String,
+    val time: Date,
     @ColumnInfo(name = "image")
     val image: Int
 ) : Parcelable

@@ -6,6 +6,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_event.view.*
 import java.text.SimpleDateFormat
+import java.util.*
 
 class EventItem(val event: Event) : Item() {
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -17,13 +18,12 @@ class EventItem(val event: Event) : Item() {
         }
     }
 
-
     private fun dateFormatter(viewHolder: GroupieViewHolder) {
-        val dateFormatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT)
-//        val timeFormatter = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT)
+        val dateFormatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault())
+        val timeFormatter = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT)
         viewHolder.itemView.apply {
             event_date.text = dateFormatter.format(event.date)
-            event_time.text = event.time
+            event_time.text = timeFormatter.format(event.time)
         }
     }
 

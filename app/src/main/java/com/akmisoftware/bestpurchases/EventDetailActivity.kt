@@ -9,6 +9,7 @@ import com.akmisoftware.bestpurchases.model.Event
 import com.akmisoftware.bestpurchases.ui.eventDetail.EventDetailPagerAdapter
 import kotlinx.android.synthetic.main.activity_event_detail.*
 import java.text.SimpleDateFormat
+import java.util.*
 
 class EventDetailActivity : AppCompatActivity() {
     companion object {
@@ -33,13 +34,12 @@ class EventDetailActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
-        val dateFormatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT)
+        val dateFormatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault())
+        val timeFormatter = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.getDefault())
         if (event != null) {
-
             event_detail_image.setImageResource(event!!.image)
-            event_date_time_value.text = dateFormatter.format(event?.date) + " " + event?.time
+            event_date_time_value.text = "${dateFormatter.format(event?.date)}" + "\n" + "${timeFormatter.format(event?.time)}"
             event_attendees_value.text = event?.attendeesAmount.toString()
-
         }
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

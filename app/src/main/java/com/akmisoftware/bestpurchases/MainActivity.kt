@@ -30,16 +30,15 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private val TAG = MainActivity::class.java.simpleName
     }
-
     //Groupie
     private lateinit var linearLayoutManager: LinearLayoutManager
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
-
     //ViewModel
     private lateinit var viewModelFactory: ViewModelFactory
     private val viewModel: EventViewModel by viewModels { viewModelFactory }
     //RxJava object
     private var disposable = CompositeDisposable()
+    private var isEventDetailsShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,14 +52,12 @@ class MainActivity : AppCompatActivity() {
 
         initRecyclerView()
 
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener {
             Log.d("$TAG Fab", "Added placeholder Event")
             val intent = Intent(this, NewEventActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-
         }
-
     }
 
     override fun onStart() {
@@ -70,13 +67,18 @@ class MainActivity : AppCompatActivity() {
             viewModel.loadAllEvents()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+
                 .subscribe({ list ->
                     Log.d("$TAG onStart", list.count().toString())
                     groupAdapter.clear()
-                    list.onEach {
+                    list.sortedWith(compareBy { it.date }).onEach {
                         Log.d("$TAG onStart", "$it")
                         groupAdapter.add(EventItem(it))
                     }
+//                    list.onEach {
+//                        Log.d("$TAG onStart", "$it")
+//                        groupAdapter.add(EventItem(it))
+//                    }
                 }, this::handleError)
         )
     }
@@ -97,9 +99,12 @@ class MainActivity : AppCompatActivity() {
         groupAdapter.apply {
             setOnItemClickListener { item, _ ->
                 if (item is EventItem) {
-                    val intent = Intent(this@MainActivity, EventDetailActivity::class.java)
-                    intent.putExtra(AppConstants.EVENT_INFO, item.event)
-                    startActivity(intent)
+                    if (!isEventDetailsShown) {
+                        val intent = Intent(this@MainActivity, EventDetailActivity::class.java)
+                        intent.putExtra(AppConstants.EVENT_INFO, item.event)
+                        startActivity(intent)
+                        isEventDetailsShown = true
+                    }
                 }
             }
             setOnItemLongClickListener { item, view ->
@@ -181,6 +186,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        isEventDetailsShown = false
+    }
 
     override fun onStop() {
         super.onStop()

@@ -11,10 +11,10 @@ import io.reactivex.Flowable
 @Dao
 interface EventDao {
     @Query("SELECT * FROM events")
-    fun loadAllUsers(): Flowable<List<Event>>
+    fun loadAllEvents(): Flowable<List<Event>>
 
     @Query("SELECT * FROM events WHERE eventId = :id")
-    fun getUserById(id: String): Flowable<Event>
+    fun getEventById(id: String): Flowable<Event>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertEvent(event: Event): Completable
