@@ -38,7 +38,9 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: EventViewModel by viewModels { viewModelFactory }
     //RxJava object
     private var disposable = CompositeDisposable()
+    //State booleans
     private var isEventDetailsShown = false
+    private var isEditEventShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,6 +129,13 @@ class MainActivity : AppCompatActivity() {
                                     R.id.menu_popup_edit -> {
                                         Log.d("Popup", "Edit was tapped")
                                         //TODO: Edit menu item action.
+                                        if (!isEditEventShown) {
+                                            val intent = Intent(this@MainActivity, NewEventActivity::class.java)
+                                            intent.putExtra(AppConstants.EVENT_INFO, item.event)
+                                            startActivity(intent)
+                                            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                                            isEditEventShown = true
+                                        }
                                         true
                                     }
                                     R.id.menu_popup_delete -> {
@@ -184,6 +193,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         isEventDetailsShown = false
+        isEditEventShown = false
     }
 
     override fun onStop() {

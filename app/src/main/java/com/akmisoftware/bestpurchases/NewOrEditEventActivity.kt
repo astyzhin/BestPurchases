@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.akmisoftware.bestpurchases.db.AppConstants
 import com.akmisoftware.bestpurchases.model.Event
 import com.akmisoftware.bestpurchases.ui.EventViewModel
 import com.akmisoftware.bestpurchases.ui.ViewModelFactory
@@ -46,6 +47,8 @@ class NewEventActivity : AppCompatActivity() {
     private var eventDate = Date()
     private var eventTime =  Date()
     private val calendar = Calendar.getInstance()
+    private val dateFormatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault())
+    private val timeFormatter = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.getDefault())
     private val calDate = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
         calendar.apply {
             set(Calendar.YEAR, year)
@@ -69,9 +72,8 @@ class NewEventActivity : AppCompatActivity() {
         }
         eventTime = calendar.time
     }
-
-    private val dateFormatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM, Locale.getDefault())
-    private val timeFormatter = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT, Locale.getDefault())
+    //Parcelable extra
+    private var event: Event? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,14 +84,26 @@ class NewEventActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
         }
-        if (edit_eventName_field.text.isNullOrEmpty()) {
+        if (intent.getParcelableExtra<Event>(AppConstants.EVENT_INFO) != null) {
+            event = intent.getParcelableExtra(AppConstants.EVENT_INFO)
+            val existingEvent = event as Event
+            edit_eventName_field.setText(existingEvent.name)
+            edit_eventDate_field.setText(dateFormatter.format(existingEvent.date))
+            edit_eventTime_field.setText(timeFormatter.format(existingEvent.time))
+            edit_eventDescription_field.setText(getString(R.string.lorem_ipsum_mid))
+            imagePicked = existingEvent.image
+            eventDate = existingEvent.date
+            eventTime = existingEvent.time
+        }
+
+        if (edit_eventDate_field.text.isNullOrEmpty()) {
             edit_eventDate_field.setText(dateFormatter.format(Date()))
         }
         if (edit_eventTime_field.text.isNullOrEmpty()) {
             edit_eventTime_field.setText(timeFormatter.format(Date()))
         }
 
-        edit_eventDate_field.setOnClickListener{
+        edit_eventDate_field.setOnClickListener {
             DatePickerDialog(this@NewEventActivity, calDate,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -102,6 +116,7 @@ class NewEventActivity : AppCompatActivity() {
         }
         initRecyclerView()
     }
+
     private fun initRecyclerView() {
         edit_imagePickerRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@NewEventActivity, LinearLayoutManager.HORIZONTAL, false)
@@ -132,7 +147,13 @@ class NewEventActivity : AppCompatActivity() {
         val id = UUID.randomUUID().toString()
         val name = edit_eventName_field.text?.toString() ?: "(No name)"
         val image = imagePicked ?: imageList[0]
-        return Event(id, name, randomNumber, eventDate, eventTime, image)
+
+        return if (event != null) {
+            val editedEvent = event as Event
+            Event(editedEvent.id, name, editedEvent.attendeesAmount, eventDate, eventTime, image)
+        } else {
+            Event(id, name, randomNumber, eventDate, eventTime, image)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
