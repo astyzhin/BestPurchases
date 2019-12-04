@@ -71,10 +71,9 @@ class MainActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ list ->
                     Log.d("$TAG onStart", list.count().toString())
-                    groupAdapter.clear()
-                    list.sortedWith(compareBy { it.date }).onEach {
-                        Log.d("$TAG onStart", "$it")
-                        groupAdapter.add(EventItem(it))
+                    groupAdapter.apply {
+                        clear()
+                        addAll(list.sortedWith(compareBy { it.date }).toEventItem())
                     }
                 }, this::handleError)
         )
@@ -167,6 +166,12 @@ class MainActivity : AppCompatActivity() {
     private fun deleteEventFromDB(event: Event) {
         thread {
             viewModel.deleteEvent(event)
+        }
+    }
+
+    private fun List<Event>.toEventItem(): List<EventItem>{
+        return this.map { event ->
+            EventItem(event)
         }
     }
 

@@ -114,6 +114,7 @@ class NewEventActivity : AppCompatActivity() {
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE), false).show()
         }
+
         initRecyclerView()
     }
 
