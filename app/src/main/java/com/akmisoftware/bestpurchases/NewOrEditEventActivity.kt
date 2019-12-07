@@ -3,6 +3,8 @@ package com.akmisoftware.bestpurchases
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.location.Address
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -18,6 +20,7 @@ import com.akmisoftware.bestpurchases.model.Event
 import com.akmisoftware.bestpurchases.ui.EventViewModel
 import com.akmisoftware.bestpurchases.ui.ViewModelFactory
 import com.akmisoftware.bestpurchases.ui.recyclerViewItems.ImagePickerItem
+import com.google.android.gms.maps.model.LatLng
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -29,9 +32,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.random.Random
 
-class NewEventActivity : AppCompatActivity() {
+class NewOrEditEventActivity : AppCompatActivity() {
     companion object {
-        private val TAG = NewEventActivity::class.java.simpleName
+        private val TAG = NewOrEditEventActivity::class.java.simpleName
     }
 
     //ViewModel
@@ -90,7 +93,8 @@ class NewEventActivity : AppCompatActivity() {
             edit_eventName_field.setText(existingEvent.name)
             edit_eventDate_field.setText(dateFormatter.format(existingEvent.date))
             edit_eventTime_field.setText(timeFormatter.format(existingEvent.time))
-            edit_eventDescription_field.setText(getString(R.string.lorem_ipsum_mid))
+            edit_eventDescription_field.setText(existingEvent.description)
+            edit_locationField.setText(existingEvent.locationName)
             imagePicked = existingEvent.image
             eventDate = existingEvent.date
             eventTime = existingEvent.time
@@ -104,23 +108,48 @@ class NewEventActivity : AppCompatActivity() {
         }
 
         edit_eventDate_field.setOnClickListener {
-            DatePickerDialog(this@NewEventActivity, calDate,
+            DatePickerDialog(this@NewOrEditEventActivity, calDate,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)).show()
         }
         edit_eventTime_field.setOnClickListener {
-            TimePickerDialog(this@NewEventActivity, calTme,
+            TimePickerDialog(this@NewOrEditEventActivity, calTme,
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE), false).show()
         }
 
         initRecyclerView()
+
+
+    }
+
+    private fun getLocation(coder: Geocoder, address: String): String {
+        val locationAddress: LatLng
+        var returnLocation = address
+        try {
+
+            val location: List<Address> = coder.getFromLocationName(address, 5)
+            location.apply {
+                val lat: Double = get(0).latitude
+                val lng: Double = get(0).longitude
+                locationAddress = LatLng(lat, lng)
+                Log.d(TAG, "$this $returnLocation before fetch")
+                returnLocation = ("$lat,$lng")
+                Log.d("$TAG Maps", "$location $lat $lng $locationAddress $returnLocation")
+            }
+
+        } catch (e: Exception) {
+            Log.e("$TAG Maps", e.localizedMessage as String)
+        } finally {
+            Log.d(TAG, "$this $returnLocation after fetch")
+            return returnLocation
+        }
     }
 
     private fun initRecyclerView() {
         edit_imagePickerRecyclerView.apply {
-            layoutManager = LinearLayoutManager(this@NewEventActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(this@NewOrEditEventActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = groupAdapter
         }
         imageList.onEach {
@@ -148,12 +177,15 @@ class NewEventActivity : AppCompatActivity() {
         val id = UUID.randomUUID().toString()
         val name = edit_eventName_field.text?.toString() ?: "(No name)"
         val image = imagePicked ?: imageList[0]
+        val locationName = edit_locationField.text?.toString() ?: "(No Location)"
+        val latLng = getLocation(Geocoder(this, Locale.getDefault()), edit_locationField.text.toString())
+        val description = edit_eventDescription_field.text?.toString() ?: "(No Description)"
 
         return if (event != null) {
             val editedEvent = event as Event
-            Event(editedEvent.id, name, editedEvent.attendeesAmount, eventDate, eventTime, image)
+            Event(editedEvent.id, name, editedEvent.attendeesAmount, eventDate, eventTime, image, locationName, latLng, description)
         } else {
-            Event(id, name, randomNumber, eventDate, eventTime, image)
+            Event(id, name, randomNumber, eventDate, eventTime, image, locationName, latLng, description)
         }
     }
 
@@ -184,6 +216,9 @@ class NewEventActivity : AppCompatActivity() {
                 true
             }
             android.R.id.home -> {
+                if (!edit_locationField.text.isNullOrEmpty()) {
+                    getLocation(Geocoder(this, Locale.getDefault()), edit_locationField.text.toString())
+                }
                 finish()
                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down)
                 true

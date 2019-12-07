@@ -8,6 +8,7 @@ class ViewModelFactory(private val dataSource: EventDao) : ViewModelProvider.Fac
     companion object {
         private val TAG = ViewModelFactory::class.java.simpleName
     }
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(EventViewModel::class.java)) {
             return EventViewModel(dataSource) as T

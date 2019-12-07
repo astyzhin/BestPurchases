@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         fab.setOnClickListener {
             Log.d("$TAG Fab", "Added placeholder Event")
-            val intent = Intent(this, NewEventActivity::class.java)
+            val intent = Intent(this, NewOrEditEventActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
         }
@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                                 .invoke(mPopup, true)
                         } catch (e: Exception) {
                             Log.e(
-                                "$this",
+                                "$TAG Adapter",
                                 "Could not show icon in popUp menu: ${e.localizedMessage}"
                             )
                         } finally {
@@ -129,7 +129,7 @@ class MainActivity : AppCompatActivity() {
                                         Log.d("Popup", "Edit was tapped")
                                         //TODO: Edit menu item action.
                                         if (!isEditEventShown) {
-                                            val intent = Intent(this@MainActivity, NewEventActivity::class.java)
+                                            val intent = Intent(this@MainActivity, NewOrEditEventActivity::class.java)
                                             intent.putExtra(AppConstants.EVENT_INFO, item.event)
                                             startActivity(intent)
                                             overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)

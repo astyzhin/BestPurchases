@@ -10,7 +10,7 @@
     <string name="event_time">20:00</string>
 
     <string name="details_fragment">Details</string>
-    <string name="details_fragment_location">Address</string>
+    <string name="details_fragment_location">Where</string>
 
     <string name="attendees_fragment">Attendees</string>
     <string name="attendees_fragment_phoneNumber">+7(999)999–99–99</string>

@@ -23,7 +23,7 @@ class EventViewModel(private val dataSource: EventDao) : ViewModel() {
     }
 
     fun updateEvent(event: Event): Completable {
-        val eventForUpdate = Event(event.id, event.name, event.attendeesAmount, event.date, event.time, event.image)
+        val eventForUpdate = Event(event.id, event.name, event.attendeesAmount, event.date, event.time, event.image, event.locationName, event.latlng, event.description)
         return dataSource.insertEvent(eventForUpdate)
     }
 

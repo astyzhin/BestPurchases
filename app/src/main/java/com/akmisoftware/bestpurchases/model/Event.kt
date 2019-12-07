@@ -26,5 +26,11 @@ data class Event(
     @ColumnInfo(name = "time")
     val time: Date,
     @ColumnInfo(name = "image")
-    val image: Int
+    val image: Int,
+    @ColumnInfo(name = "locationName")
+    val locationName: String,
+    @ColumnInfo(name = "latlng")
+    val latlng: String,
+    @ColumnInfo(name = "description")
+    val description: String
 ) : Parcelable
